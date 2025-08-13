@@ -1,53 +1,231 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegant Player</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouTube Viewer Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #0f141a;
+      color: #e1e1e1;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #1a1a1a;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    header h1 {
+      font-size: 28px;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 16px;
+      color: #aaa;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 30px auto;
+      gap: 25px;
+      padding: 0 20px;
+    }
+
+    .main-player {
+      flex: 2;
+      min-width: 300px;
+    }
+
+    .main-player iframe {
+      width: 100%;
+      height: 500px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .sidebar {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .search-box {
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: #2a2a2a;
+      color: white;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .video-list {
+      max-height: 600px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #444 #1a1a1a;
+    }
+
+    .video-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .video-item:hover {
+      background: #2a2a2a;
+    }
+
+    .video-thumb {
+      width: 120px;
+      height: 68px;
+      border-radius: 6px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .video-info h3 {
+      font-size: 15px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .video-info p {
+      font-size: 13px;
+      color: #aaa;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    /* Scroll personalizado */
+    .video-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .video-list::-webkit-scrollbar-track {
+      background: #1a1a1a;
+    }
+
+    .video-list::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 3px;
+    }
+  </style>
 </head>
 <body>
-    <div class="video-container">
-        <div class="video-wrapper">
-            <video id="videoPlayer" class="video-element">
-                <source src="tu-video.mp4" type="video/mp4">
-                Tu navegador no soporta el elemento de video.
-            </video>
-            
-            <div class="video-controls">
-                <div class="progress-container">
-                    <progress id="progressBar" value="0" max="100"></progress>
-                    <div class="time-display">
-                        <span id="currentTime">00:00</span> / <span id="duration">00:00</span>
-                    </div>
-                </div>
-                
-                <div class="controls-bottom">
-                    <div class="left-controls">
-                        <button id="playBtn" class="control-btn">
-                            <i class="fas fa-play"></i>
-                        </button>
-                        <button id="muteBtn" class="control-btn">
-                            <i class="fas fa-volume-up"></i>
-                        </button>
-                        <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="1">
-                    </div>
-                    
-                    <div class="right-controls">
-                        <button id="fullscreenBtn" class="control-btn">
-                            <i class="fas fa-expand"></i>
-                        </button>
-                        <button id="settingsBtn" class="control-btn">
-                            <i class="fas fa-cog"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+  <header>
+    <h1>🎥 Las mejores Canciones de Ayer, Hoy y Siempre</h1>
+    <p>Música para tu corazón&nbsp;</p>
+  </header>
+
+  <div class="container">
+    <!-- Reproductor principal -->
+    <div class="main-player">
+      <iframe 
+        id="player" 
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=0" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen>
+      </iframe>
     </div>
-    
-    <script src="script.js"></script>
+
+    <!-- Barra lateral con búsqueda y lista -->
+    <div class="sidebar">
+      <div class="search-box">
+        <input type="text" placeholder="Buscar video..." id="searchInput" />
+      </div>
+
+      <div class="video-list" id="videoList">
+        <!-- Videos cargados dinámicamente -->
+      </div>
+    </div>
+</div>
+
+  <footer>
+    &copy; 2025 YouTube Viewer Pro | Hecho con profesionalismo y pasión por el contenido
+  </footer>
+
+<script>
+    // Lista de videos (puedes reemplazar con una API real)
+    const videos = [
+      { id: "9iPNmcnVbpI", title: "Alan Walker Style Album 2025", channel: "", thumb: "https://img.youtube.com/vi/9iPNmcnVbpI/mqdefault.jpg" },
+      { id: "9bZkp7q19f0", title: "PSY - Gangnam Style", channel: "SMTOWN", thumb: "https://img.youtube.com/vi/9bZkp7q19f0/mqdefault.jpg" },
+      { id: "kXYiU_JCYtU", title: "Luis Fonsi - Despacito", channel: "Luis Fonsi", thumb: "https://img.youtube.com/vi/kXYiU_JCYtU/mqdefault.jpg" },
+      { id: "JGwWNGJdvx8", title: "Ed Sheeran - Shape of You", channel: "Ed Sheeran", thumb: "https://img.youtube.com/vi/JGwWNGJdvx8/mqdefault.jpg" },
+      { id: "fJ9rUzIMcZQ", title: "Queen - Bohemian Rhapsody", channel: "Queen Official", thumb: "https://img.youtube.com/vi/fJ9rUzIMcZQ/mqdefault.jpg" },
+      { id: "e65Dk-QCaso", title: "Maroon 5 - Sugar", channel: "Maroon 5", thumb: "https://img.youtube.com/vi/5MgBikgcWnY/mqdefault.jpg" }
+    ];
+
+    const player = document.getElementById('player');
+    const videoList = document.getElementById('videoList');
+    const searchInput = document.getElementById('searchInput');
+
+    // Cargar lista de videos
+    function cargarVideos(lista) {
+      videoList.innerHTML = '';
+      lista.forEach(video => {
+        const item = document.createElement('div');
+        item.className = 'video-item';
+        item.innerHTML = `
+          <img src="${video.thumb}" alt="${video.title}" class="video-thumb">
+          <div class="video-info">
+            <h3>${video.title}</h3>
+            <p>${video.channel}</p>
+          </div>
+        `;
+        item.onclick = () => {
+          player.src = `https://www.youtube.com/embed/${video.id}?autoplay=1`;
+        };
+        videoList.appendChild(item);
+      });
+    }
+
+    // Buscar videos
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+      const filtered = videos.filter(video => 
+        video.title.toLowerCase().includes(query) || 
+        video.channel.toLowerCase().includes(query)
+      );
+      cargarVideos(filtered);
+    });
+
+    // Cargar todos los videos al inicio
+    cargarVideos(videos);
+  </script>
+
 </body>
 </html>
