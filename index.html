@@ -3,36 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>Reproductor de YouTube - Lista de Videos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             color: #333;
         }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: #ff0000;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        main {
+            flex: 1;
+            padding: 3rem 0;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0 2rem;
         }
-        h1 {
-            color: #ff0000;
-            text-align: center;
+
+        .player-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.6s ease-out;
         }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .controls {
+            margin-bottom: 2rem;
+        }
+
+        .select-wrapper {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .select-label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .video-select {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1.5rem;
+            font-size: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            font-family: inherit;
+        }
+
+        .video-select:hover {
+            border-color: #667eea;
+        }
+
+        .video-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .select-wrapper::after {
+            content: '\f107';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #667eea;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .select-wrapper:hover::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* Relación 16:9 */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
-            margin-bottom: 20px;
-            background-color: #000;
-            border-radius: 4px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            background: #000;
+            margin-bottom: 2rem;
         }
+
         .video-container iframe {
             position: absolute;
             top: 0;
@@ -40,172 +166,269 @@
             width: 100%;
             height: 100%;
             border: none;
+            border-radius: 16px;
         }
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 20px;
+
+        .video-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
         }
-        .control-group {
-            flex: 1;
-            min-width: 200px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        select, input, button {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button {
-            background-color: #ff0000;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #cc0000;
-        }
-        .video-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .video-thumbnail {
-            cursor: pointer;
-            border-radius: 4px;
-            overflow: hidden;
-            transition: transform 0.3s;
-        }
-        .video-thumbnail:hover {
-            transform: scale(1.03);
-        }
-        .video-thumbnail img {
-            width: 100%;
+
+        .video-info.active {
             display: block;
         }
-        .video-title {
-            padding: 10px;
-            background-color: #f9f9f9;
-            font-size: 14px;
-        }
-        @media (max-width: 768px) {
-            .controls {
-                flex-direction: column;
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
             }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .video-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .video-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .meta-item i {
+            color: #667eea;
+        }
+
+        .placeholder-message {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #888;
+        }
+
+        .placeholder-message i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+
+        .placeholder-message p {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .placeholder-message small {
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 1rem;
+            }
+
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+
+            .player-section {
+                padding: 1.5rem;
+            }
+
+            .video-title {
+                font-size: 1.2rem;
+            }
+
+            .video-meta {
+                gap: 1rem;
+            }
+        }
+
+        .loading-spinner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1></h1>
-        
-        <div class="video-container">
-            <iframe id="youtube-player" src="https://www.youtube.com/watch?v=" allowfullscreen></iframe>
-        </div>
-        
-        <div class="controls">
-            <div class="control-group">
-                <label for="video-select">Forex</label>
-                <select id="video-select">
-                    <option value="p4-EgFXfDkc">Por ti volveré</option>
-                    <option value="mckVQD4xDzk"> Llegaste Tú</option>
-                    <option value="t47sBiy2lfo">Alan Walker - Faded</option>
-                    <option value="slkGqwI6fVE">Let Me Love You</option>					
-                    
-					<option value="">Tik.Cl 01- </option>
-					<option value="">Tik.Cl 01- </option>
-					
-					
-					
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <label for="quality-select">Calidad</label>
-                <select id="quality-select">
-                  <option value="default">Predeterminada</option>
-                    <option value="highres">Alta resolución</option>
-                    <option value="hd1080">1080p</option>
-                    <option value="hd720">720p</option>
-                    <option value="medium">480p</option>
-                    <option value="small">360p</option>
-                    <option value="tiny">240p</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <label for="autoplay">Reproducíon&nbsp;</label>
-                <select id="autoplay">
-                  <option value="0">Desactivado</option>
-                    <option value="1">Activado</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <label for="start-time">Reproducción</label>
-                <input type="number" id="start-time" min="0" value="0">
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fab fa-youtube"></i>
+                <h1>YouTube Player</h1>
             </div>
         </div>
-        
-        <button id="play-button">Reproducir Video</button>
-    </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="player-section">
+                <div class="controls">
+                    <div class="select-wrapper">
+                        <label for="videoSelect" class="select-label">
+                            <i class="fas fa-play-circle"></i> Selecciona un video para reproducir
+                        </label>
+                        <select id="videoSelect" class="video-select">
+                            <option value="">-- Elige un video de la lista --</option>
+                            <option value="dQw4w9WgXcQ" data-title="Rick Astley - Never Gonna Give You Up" data-description="El clásico video de Rick Astley que se ha convertido en un fenómeno de internet.">
+                                Rick Astley - Never Gonna Give You Up
+                            </option>
+                            <option value="kJQP7kiw5Fk" data-title="Luis Fonsi - Despacito ft. Daddy Yankee" data-description="El video musical más visto de YouTube de todos los tiempos.">
+                                Luis Fonsi - Despacito ft. Daddy Yankee
+                            </option>
+                            <option value="9bZkp7q19f0" data-title="PSY - GANGNAM STYLE(강남스타일) M/V" data-description="El video que rompió récords y popularizó K-Pop a nivel mundial.">
+                                PSY - GANGNAM STYLE
+                            </option>
+                            <option value="hTWKbfoikeg" data-title="Smash Mouth - All Star" data-description="El icónico tema de Smash Mouth que aparece en Shrek y se ha convertido en un meme.">
+                                Smash Mouth - All Star
+                            </option>
+                            <option value="fJ9rUzIMcZQ" data-title="Queen - Bohemian Rhapsody" data-description="La obra maestra de Queen, considerada una de las mejores canciones de la historia.">
+                                Queen - Bohemian Rhapsody
+                            </option>
+                            <option value="RgKAFK5djSk" data-title="Mark Ronson - Uptown Funk ft. Bruno Mars" data-description="El éxito global que dominó las listas de reproducción en 2015.">
+                                Mark Ronson - Uptown Funk ft. Bruno Mars
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="video-container" id="videoContainer">
+                    <div class="placeholder-message">
+                        <i class="fas fa-video"></i>
+                        <p>Selecciona un video para comenzar</p>
+                        <small>Elige una opción de la lista desplegable arriba</small>
+                    </div>
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                </div>
+
+                <div class="video-info" id="videoInfo">
+                    <h2 class="video-title" id="videoTitle"></h2>
+                    <p class="video-description" id="videoDescription"></p>
+                    <div class="video-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-eye"></i>
+                            <span>Reproduciendo ahora</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-thumbs-up"></i>
+                            <span>Me gusta</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-share"></i>
+                            <span>Compartir</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const player = document.getElementById('youtube-player');
-            const videoSelect = document.getElementById('video-select');
-            const qualitySelect = document.getElementById('quality-select');
-            const autoplaySelect = document.getElementById('autoplay');
-            const startTimeInput = document.getElementById('start-time');
-            const playButton = document.getElementById('play-button');
-            const videoThumbnails = document.querySelectorAll('.video-thumbnail');
-            
-            // Función para cargar el video con las opciones seleccionadas
-            function loadVideo() {
-                const videoId = videoSelect.value;
-                const quality = qualitySelect.value;
-                const autoplay = autoplaySelect.value;
-                const startTime = startTimeInput.value;
-                
-                let url = `https://www.youtube.com/embed/${videoId}?`;
-                
-                // Agregar parámetros según las opciones
-                if (quality !== 'default') {
-                    url += `&vq=${quality}`;
-                }
-                if (autoplay === '1') {
-                    url += '&autoplay=1';
-                }
-                if (startTime > 0) {
-                    url += `&start=${startTime}`;
-                }
-                
-                player.src = url;
+        const videoSelect = document.getElementById('videoSelect');
+        const videoContainer = document.getElementById('videoContainer');
+        const videoInfo = document.getElementById('videoInfo');
+        const videoTitle = document.getElementById('videoTitle');
+        const videoDescription = document.getElementById('videoDescription');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        // Función para cargar el video
+        function loadVideo(videoId) {
+            if (!videoId) {
+                // Mostrar placeholder si no hay video seleccionado
+                videoContainer.innerHTML = `
+                    <div class="placeholder-message">
+                        <i class="fas fa-video"></i>
+                        <p>Selecciona un video para comenzar</p>
+                        <small>Elige una opción de la lista desplegable arriba</small>
+                    </div>
+                `;
+                videoInfo.classList.remove('active');
+                return;
             }
-            
-            // Evento para el botón de reproducción
-            playButton.addEventListener('click', loadVideo);
-            
-            // Eventos para los thumbnails de video
-            videoThumbnails.forEach(thumbnail => {
-                thumbnail.addEventListener('click', function() {
-                    videoSelect.value = this.getAttribute('data-video-id');
-                    loadVideo();
-                });
-            });
-            
-            // Cargar el video inicial
-            loadVideo();
+
+            // Mostrar spinner de carga
+            loadingSpinner.style.display = 'block';
+            videoContainer.innerHTML = '<div class="loading-spinner" id="loadingSpinner"></div>';
+
+            // Simular tiempo de carga
+            setTimeout(() => {
+                // Obtener información del video seleccionado
+                const selectedOption = videoSelect.options[videoSelect.selectedIndex];
+                const title = selectedOption.getAttribute('data-title');
+                const description = selectedOption.getAttribute('data-description');
+
+                // Crear iframe de YouTube
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1&autoplay=1`;
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                iframe.allowFullscreen = true;
+
+                // Limpiar contenedor y agregar iframe
+                videoContainer.innerHTML = '';
+                videoContainer.appendChild(iframe);
+
+                // Actualizar información del video
+                videoTitle.textContent = title;
+                videoDescription.textContent = description;
+                videoInfo.classList.add('active');
+
+                // Ocultar spinner
+                loadingSpinner.style.display = 'none';
+            }, 500);
+        }
+
+        // Event listener para el cambio de selección
+        videoSelect.addEventListener('change', (e) => {
+            const videoId = e.target.value;
+            loadVideo(videoId);
+        });
+
+        // Cargar video inicial si hay uno seleccionado
+        if (videoSelect.value) {
+            loadVideo(videoSelect.value);
+        }
+
+        // Agregar animación al hacer hover en las opciones
+        videoSelect.addEventListener('focus', () => {
+            document.querySelector('.select-wrapper').style.transform = 'scale(1.02)';
+        });
+
+        videoSelect.addEventListener('blur', () => {
+            document.querySelector('.select-wrapper').style.transform = 'scale(1)';
         });
     </script>
 </body>
